@@ -1,17 +1,26 @@
 package sv.linda;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import sv.linda.mongo.MongoFunctions;
+import sv.linda.mongo.Users;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+
+    void printStudents(List<String> students){
+        for (String student : students) {
+            System.out.println(student);
         }
+    }
+
+    public static void main(String[] args) {
+        MongoFunctions mongo = new MongoFunctions();
+        Users user = new Users();
+        Main main = new Main();
+        List<String> students = new ArrayList<>(user.makeStudentList());
+        main.printStudents(students);
+        user.addUser("James", "Gustafson", "Students");
+        main.printStudents(students);
     }
 }
