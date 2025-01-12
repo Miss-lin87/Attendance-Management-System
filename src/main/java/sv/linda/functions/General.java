@@ -36,12 +36,4 @@ public class General {
         logger.info(question);
         return in.nextLine();
     }
-
-    public Map<String, Boolean> makeStudentmap(List<String> students) {
-        Map<String, Boolean> studentMap = new HashMap<>();
-        for (String student : students) {
-            studentMap.put(student, false);
-        }
-        return studentMap;
-    }
 }
