@@ -11,7 +11,7 @@ public class Attendance {
     }
 
     boolean isPresent(String student) {
-        General general = new General();
-        return general.askUser("yes,no","Is " + student + " present?").equals("yes");
+        General gen = new General();
+        return gen.askUser("yes,no", "Is " + student + " present?").equals("yes");
     }
 }
