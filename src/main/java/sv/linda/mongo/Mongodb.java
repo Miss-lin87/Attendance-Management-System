@@ -8,24 +8,24 @@ import org.bson.Document;
 import sv.linda.functions.General;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Mongodb  {
     private final MongoClient client;
     private final MongoDatabase database;
-    private final String[] rolls;
+    private final String rolls;
 
     public Mongodb(String db, String rolls){
         this.client = MongoClients.create("mongodb://localhost:27017");
         this.database = client.getDatabase(db);
-        this.rolls = rolls.split(",");
+        this.rolls = rolls;
     }
 
     private Map<String, Boolean> makeStudentmap(String lesson) {
         Map<String, Boolean> studentMap = new HashMap<>();
-        for (Document student : this.getCollection("Students").find()) {
+        for (Document student : this.getCollection("students").find()) {
             if (student.get("Classes").toString().contains(lesson)) {
                 String temp = student.get("FName").toString() + " " + student.get("LName").toString();
                 studentMap.put(temp, false);
@@ -38,8 +38,8 @@ public class Mongodb  {
         return database.getCollection(roll);
     }
 
-    private String findID(String name) {
-        for (String roll : this.rolls) {
+    public String findID(String name) {
+        for (String roll : this.rolls.split(",")) {
             for (Document people : this.getCollection(roll).find()){
                 if (people.get("FName").equals(name.split(" ")[0]) && people.get("LName").equals(name.split(" ")[1])){
                     return people.get("_id").toString();
@@ -48,25 +48,6 @@ public class Mongodb  {
         }
         return "not found";
     }
-
-    private String findRoll(String name) {
-        for (String roll : this.rolls) {
-            for (Document people : this.getCollection(roll).find()) {
-                if (people.get("FName").equals(name.split(" ")[0]) && people.get("LName").equals(name.split(" ")[1])){
-                    return roll;
-                }
-            }
-        }
-        return "not found";
-    }
-
-    /*private void updateRecord(String date, String lesson) {
-        Document tempDoc = new Document("_id", date + " " + lesson);
-        for (Map.Entry<String, Boolean> student : this.studentMap.entrySet()) {
-            tempDoc.append(student.getKey(), student.getValue());
-        }
-        this.getCollection("Students").replaceOne(tempDoc, tempDoc);
-    } Not working needs fixing later */
 
     private void addRecord(String date, String lesson) {
         Document tempDoc = new Document("_id", date + " " + lesson);
@@ -77,27 +58,67 @@ public class Mongodb  {
     }
 
     private void addUser(String role) {
-        String name = new General().askUser("What is the name of the person? ");
+        General gen = new General();
+        String name = gen.askUser("What is the name of the person? ");
         Document doc1 = new Document("FName", name.split(" ")[0]).append("LName", name.split(" ")[1]).append("Classes", " ");
         this.getCollection(role).insertOne(doc1);
     }
 
     private void deleteUser(String name) {
-        database.getCollection(this.findRoll(name)).deleteOne(new Document("_id", this.findID(name)));
+        for (Document person : this.getCollection(this.getData(this.findID(name), "roll")).find()){
+            if (Objects.equals(person.getObjectId("_id").toString(), this.findID(name))){
+                this.getCollection(this.getData(this.findID(name), "roll")).deleteOne(person);
+            }
+        }
+    }
+
+    private void Change(String id, String roll, Docdata change){
+        for (Document person : this.getCollection(roll).find()){
+            if (Objects.equals(person.getObjectId("_id").toString(), id)){
+                this.getCollection(roll).replaceOne(person, change.getDoc());
+            }
+        }
+    }
+
+    public void changeData(String name, String data) {
+        String change = new General().askUser("What is the new value of " + data + " ? ");
+        Docdata doc = new Docdata(this.findID(name));
+        switch (data) {
+            case "FName" -> doc.setFName(change);
+            case "LName" -> doc.setLName(change);
+            case "Roll" -> doc.setRoll(change);
+            case "Classes" -> doc.setLesions(change);
+            case "Rclasses" -> doc.removeLesions(change);
+        }
+        this.Change(this.findID(name), this.getData(this.findID(name), "roll"), doc);
+    }
+
+    public String getData(String id, String outputData) {
+        String output = "";
+        for (String roll : this.rolls.split(",")) {
+            for (Document people : this.getCollection(roll).find()){
+                if (Objects.equals(outputData, "roll") && Objects.equals(people.get("_id").toString(), id)){
+                    output = roll;
+                }
+                else if (people.get("_id").toString().equals(id) && people.containsKey(outputData)){
+                    output = people.get(outputData).toString();
+                }
+            }
+        }
+        return output;
     }
 
     public Object Use(String action) {
+        General gen = new General();
         switch(action){
-            case "add record" -> this.addRecord(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), new General().askUser("What lesson is it?"));
-            case "add user" -> this.addUser(new General().askUser(Arrays.toString(this.rolls), "What is the role of the person being added? "));
-            case "delete user" -> this.deleteUser(new General().askUser("What is the name of the person being deleted? "));
+            case "add record" -> this.addRecord(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), gen.askUser("What lesson is it?"));
+            case "add user" -> this.addUser(gen.askUser(this.rolls, "What is the role of the person being added? "));
+            case "delete user" -> this.deleteUser(gen.askUser("What is the name of the person being deleted? "));
             case "get map" -> {
-                return this.makeStudentmap(new General().askUser("What class is this? "));
+                return this.makeStudentmap(gen.askUser("What class is this? "));
             }
-            case "get id" -> {
-                return this.findID(new General().askUser("What is the name of the person? "));
-            }
+            default -> this.Use(gen.askUser("Please make a valid selection"));
         }
-        return this.Use(new General().askUser("Please make a valid selection. "));
+        return null;
     }
 }

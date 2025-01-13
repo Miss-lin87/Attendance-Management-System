@@ -9,14 +9,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class General {
-    Logger logger = Logger.getLogger(getClass().getName());
+    private final Scanner input;
+    private final Logger log;
 
-    private String[] Moptions(String input) {
-        return input.split(",");
+    public General(){
+        this.input = new Scanner(System.in);
+        this.log = Logger.getLogger(getClass().getName());
     }
 
-    private String regex_spell_correct(String textOptions, String textPlayer) {
-        for (String elem : Moptions(textOptions)) {
+    private String regex_spell_correct(String options, String textPlayer) {
+        for (String elem : options.split(",")) {
             Matcher text = Pattern.compile(textPlayer.toLowerCase()).matcher(elem);
             if (text.find()) {
                 return elem;
@@ -26,14 +28,12 @@ public class General {
     }
 
     public String askUser(String options, String question) {
-        Scanner in = new Scanner(System.in);
-        logger.info(question);
-        return regex_spell_correct(options, in.nextLine());
+        this.log.info(question);
+        return regex_spell_correct(options, this.input.nextLine());
     }
 
     public String askUser(String question){
-        Scanner in = new Scanner(System.in);
-        logger.info(question);
-        return in.nextLine();
+        this.log.info(question);
+        return this.input.nextLine();
     }
 }
