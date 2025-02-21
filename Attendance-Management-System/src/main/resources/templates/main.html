@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"
+xmlns="http://www.w3.org/1999/xhtml"
+xmlns:th = "https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Greeting Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            margin-top: 100px;
+        }
+        .greeting {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<form method="post" th:object="${userModel}">
+    <select type="text" th:field="*{userText}">
+        <option type="select" th:value="${clazz0}" th:text="${clazz0}"></option>
+        <option type="select" th:value="${clazz1}" th:text="${clazz1}"></option>
+        <option type="select" th:value="${clazz2}" th:text="${clazz2}"></option>
+    </select><br>
+    <td><button type="submit">Get students</button></td>
+</form>
+<script>
+    function confirm() {
+        alert("Test");
+    }
+</script>
+</body>
+</html>
