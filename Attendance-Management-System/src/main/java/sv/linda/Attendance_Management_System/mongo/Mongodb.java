@@ -141,7 +141,7 @@ public class Mongodb  {
 
     public Object Use(String action) {
         General gen = new General();
-        switch(action){
+        switch (action) {
             case "add record" -> this.addRecord(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), gen.askUser("What lesson is it?"));
             case "add user" -> this.addUser(gen.askUser(this.rolls, "What is the role of the person being added? "));
             case "delete user" -> this.deleteUser(gen.askUser("What is the name of the person being deleted? "));

@@ -6,8 +6,6 @@ import lombok.Setter;
 
 @Data
 public class UserModel {
-    @Getter
-    @Setter
     public Object userText;
     public boolean pressent;
 

@@ -8,8 +8,6 @@ import sv.linda.Attendance_Management_System.mongo.Mongodb;
 
 @Data
 public class Student {
-    @Getter
-    @Setter
     private String id;
     private String FName;
     private String LName;

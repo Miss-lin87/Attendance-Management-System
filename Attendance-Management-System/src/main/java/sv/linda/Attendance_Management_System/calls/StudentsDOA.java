@@ -8,7 +8,6 @@ import sv.linda.Attendance_Management_System.mongo.Mongodb;
 
 @Repository
 public class StudentsDOA {
-    @Getter
     @Setter
     private static Students students = new Students();
     private static final Mongodb db = new Mongodb("Logins", "students");

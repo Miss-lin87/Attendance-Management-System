@@ -39,11 +39,11 @@ xmlns:th = "https://www.thymeleaf.org">
         <option type="select" th:value="${clazz1}" th:text="${clazz1}"></option>
         <option type="select" th:value="${clazz2}" th:text="${clazz2}"></option>
     </select><br>
-    <td><button type="submit">Get students</button></td>
+    <td><button type="submit" alert="confirm()">Get students</button></td>
 </form>
 <script>
     function confirm() {
-        alert("Test");
+        alert("Getting Students");
     }
 </script>
 </body>
