@@ -1,9 +1,13 @@
 package sv.linda.Attendance_Management_System;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
 public class UserModel {
+    @Getter
+    @Setter
     public Object userText;
     public boolean pressent;
 

@@ -6,7 +6,7 @@ import sv.linda.Attendance_Management_System.UserModel;
 
 @RestController
 @SessionAttributes("userModel")
-@RequestMapping(path="/Rest", produces="application/json")
+@RequestMapping(path="/rest", produces="application/json")
 @CrossOrigin(origins="*")
 public class RestMVCController {
 

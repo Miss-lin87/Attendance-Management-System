@@ -4,6 +4,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import org.bson.types.ObjectId;
 import sv.linda.Attendance_Management_System.functions.General;
 import org.bson.Document;
 import java.time.LocalDateTime;
@@ -31,6 +32,14 @@ public class Mongodb  {
         return students;
     }
 
+    public Map<ObjectId, String> getAllStudentID(){
+        Map<ObjectId, String> AllStudents = new HashMap<>();
+        for (Document student : this.getCollection("students").find()) {
+            AllStudents.put(student.getObjectId("_id"), student.get("FName").toString() + " " + student.get("LName").toString());
+        }
+        return AllStudents;
+    }
+
     private Map<String, Boolean> makeStudentmap(String lesson) {
         Map<String, Boolean> studentMap = new HashMap<>();
         for (Document student : this.getCollection("students").find()) {
@@ -46,7 +55,7 @@ public class Mongodb  {
         return database.getCollection(roll);
     }
 
-    private String findID(String name) {
+    public String findID(String name) {
         for (String roll : this.rolls.split(",")) {
             for (Document people : this.getCollection(roll).find()){
                 if (people.get("FName").equals(name.split(" ")[0]) && people.get("LName").equals(name.split(" ")[1])){
